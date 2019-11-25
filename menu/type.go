@@ -3,7 +3,7 @@ package menu
 // Menu 菜单内容
 type Menu struct {
 	Button []*Button `xml:"button"`
-	Appid  string    `xml:"appid,omitempty"`
+	Appid  string    `xml:"appid"`
 }
 
 // Button 一级菜单
