@@ -17,6 +17,8 @@ type BaseConfig struct {
 	AppSecret string `yaml:"app_secret"`
 	// redis缓存的头部key(选填)
 	CacheKey string `yaml:"cache_key"`
+	// Debug 是否调试模式
+	Debug bool `yaml:"debug"`
 }
 
 // Config owechat配置中心

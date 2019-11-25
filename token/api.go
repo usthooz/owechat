@@ -1,4 +1,4 @@
-package args
+package token
 
 const (
 	// API_URL_PREFIX 微信授权请求URL

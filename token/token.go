@@ -5,7 +5,6 @@ import (
 	"time"
 
 	simplejson "github.com/bitly/go-simplejson"
-	"github.com/usthooz/owechat/args"
 	"github.com/usthooz/owechat/cache"
 	"github.com/usthooz/owechat/config"
 	"github.com/usthooz/owechat/util"
@@ -28,7 +27,7 @@ func GetAccessToken() (accessToken string, err error) {
 		}
 	*/
 
-	url := fmt.Sprintf("%s%sappid=%s&secret=%s", args.API_URL_PREFIX, args.AUTH_URL, cfg.BaseConf.Appid, cfg.BaseConf.AppSecret)
+	url := fmt.Sprintf("%s%sappid=%s&secret=%s", API_URL_PREFIX, AUTH_URL, cfg.BaseConf.Appid, cfg.BaseConf.AppSecret)
 
 	// request
 	_, bs, e := util.GET(url)
