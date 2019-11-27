@@ -17,5 +17,5 @@ func GetAccessToken() (string, error) {
 	if res.Err() == redis.Nil {
 		return "", nil
 	}
-	return res.String(), res.Err()
+	return res.Val(), res.Err()
 }
