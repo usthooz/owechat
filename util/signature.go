@@ -1,4 +1,4 @@
-package msg
+package util
 
 import (
 	"crypto/sha1"
