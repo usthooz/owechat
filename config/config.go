@@ -15,6 +15,8 @@ type BaseConfig struct {
 	Appid string `yaml:"appid"`
 	// wx app secret
 	AppSecret string `yaml:"app_secret"`
+	// AesKey 消息加密的aes算法key
+	AesKey string `yaml:"aes_key"`
 	// redis缓存的头部key(选填)
 	CacheKey string `yaml:"cache_key"`
 	// Debug 是否调试模式
