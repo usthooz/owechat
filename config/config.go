@@ -17,6 +17,10 @@ type BaseConfig struct {
 	AppSecret string `yaml:"app_secret"`
 	// AesKey 消息加密的aes算法key
 	AesKey string `yaml:"aes_key"`
+	// Token 微信后台配置的token
+	Token string `yml:"token"`
+	// PayKey 支付秘钥
+	PayKey string `yaml:"pay_key"`
 	// redis缓存的头部key(选填)
 	CacheKey string `yaml:"cache_key"`
 	// Debug 是否调试模式
