@@ -2,6 +2,17 @@ package msg
 
 // CommonMsg 消息通用结构体
 type CommonMsg struct {
+	// 签名
+	Signature string `param:"<query>" xml:"signature"`
+	// 秒级时间戳
+	Timestamp int64 `param:"<query>" xml:"timestamp"`
+	// 随机值
+	Nonce string `param:"<query>" xml:"nonce"`
+	// 加密方式
+	EncryptType string `params:"<query>" xml:"encrypt_type"`
+	// 发送者openID
+	Openid string `param:"<query>" xml:"openid"`
+
 	// 开发者微信号
 	ToUserName string `xml:"ToUserName,omitempty"`
 	// 发送方帐号（一个OpenID）
@@ -9,7 +20,7 @@ type CommonMsg struct {
 	// 消息创建时间 （整型）
 	CreateTime int64 `xml:"CreateTime,omitempty"`
 	// 消息类型
-	MsgType string `xml:"MsgType,omitempty"`
+	MsgType MsgType `xml:"MsgType,omitempty"`
 }
 
 // MessageRecive 接收微信发送消息的结构体
@@ -68,8 +79,14 @@ type MessageRecive struct {
 
 // EncryptedXMLMsg 安全模式下的消息体
 type EncryptedXMLMsg struct {
-	// 开发者微信号
-	ToUserName string `xml:"ToUserName"`
-	// 加密的消息
-	EncryptedMsg string `xml:"Encrypt"`
+	// // 签名
+	// Signature string `param:"<query>" xml:"signature"`
+	// // 秒级时间戳
+	// Timestamp int64 `param:"<query>" xml:"timestamp"`
+	// // 随机值
+	// Nonce string `param:"<query>" xml:"nonce"`
+	// 加密方式
+	EncryptType string `params:"<query>" xml:"encrypt_type"`
+	// 加密消息体
+	MsgSignature string `params:"<query>" xml:"msg_signature"`
 }

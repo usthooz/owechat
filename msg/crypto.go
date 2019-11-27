@@ -11,8 +11,8 @@ import (
 	"fmt"
 )
 
-//EncryptMsg 加密消息
-func EncryptMsg(random, rawXMLMsg []byte, appID, aesKey string) (encrtptMsg []byte, err error) {
+// encryptMsg 加密消息
+func encryptMsg(random, rawXMLMsg []byte, appID, aesKey string) (encrtptMsg []byte, err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("panic error: err=%v", e)
@@ -24,13 +24,13 @@ func EncryptMsg(random, rawXMLMsg []byte, appID, aesKey string) (encrtptMsg []by
 	if err != nil {
 		panic(err)
 	}
-	ciphertext := AESEncryptMsg(random, rawXMLMsg, appID, key)
+	ciphertext := aesEncryptMsg(random, rawXMLMsg, appID, key)
 	encrtptMsg = []byte(base64.StdEncoding.EncodeToString(ciphertext))
 	return
 }
 
-// AESEncryptMsg ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
-func AESEncryptMsg(random, rawXMLMsg []byte, appID string, aesKey []byte) (ciphertext []byte) {
+// aesEncryptMsg ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
+func aesEncryptMsg(random, rawXMLMsg []byte, appID string, aesKey []byte) (ciphertext []byte) {
 	const (
 		BlockSize = 32            // PKCS#7
 		BlockMask = BlockSize - 1 // BLOCK_SIZE 为 2^n 时, 可以用 mask 获取针对 BLOCK_SIZE 的余数
@@ -66,18 +66,12 @@ func AESEncryptMsg(random, rawXMLMsg []byte, appID string, aesKey []byte) (ciphe
 	return
 }
 
-// DecryptMsg 消息解密
-func DecryptMsg(appID, encryptedMsg, aesKey string) (random, rawMsgXMLBytes []byte, err error) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = fmt.Errorf("panic error: err=%v", e)
-			return
-		}
-	}()
-
+// decryptMsg 消息解密
+func decryptMsg(appID, encryptedMsg, aesKey string) (random, rawMsgXMLBytes []byte, err error) {
 	var (
 		encryptedMsgBytes, key, getAppIDBytes []byte
 	)
+
 	encryptedMsgBytes, err = base64.StdEncoding.DecodeString(encryptedMsg)
 	if err != nil {
 		return
@@ -85,16 +79,16 @@ func DecryptMsg(appID, encryptedMsg, aesKey string) (random, rawMsgXMLBytes []by
 
 	key, err = aesKeyDecode(aesKey)
 	if err != nil {
-		panic(err)
+		return nil, nil, err
 	}
 
-	random, rawMsgXMLBytes, getAppIDBytes, err = AESDecryptMsg(encryptedMsgBytes, key)
+	random, rawMsgXMLBytes, getAppIDBytes, err = aesDecryptMsg(encryptedMsgBytes, key)
 	if err != nil {
-		err = fmt.Errorf("DecryptMsg: 消息解密失败,%v", err)
+		err = fmt.Errorf("decryptMsg: 消息解密失败,%v", err)
 		return
 	}
 	if appID != string(getAppIDBytes) {
-		err = fmt.Errorf("DecryptMsg: 消息解密校验APPID失败")
+		err = fmt.Errorf("decryptMsg: 消息解密校验APPID失败")
 		return
 	}
 	return
@@ -116,8 +110,8 @@ func aesKeyDecode(encodedAESKey string) (key []byte, err error) {
 	return
 }
 
-// AESDecryptMsg ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
-func AESDecryptMsg(ciphertext []byte, aesKey []byte) (random, rawXMLMsg, appID []byte, err error) {
+// aesDecryptMsg ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
+func aesDecryptMsg(ciphertext []byte, aesKey []byte) (random, rawXMLMsg, appID []byte, err error) {
 	const (
 		// PKCS#7
 		BlockSize = 32
@@ -126,11 +120,11 @@ func AESDecryptMsg(ciphertext []byte, aesKey []byte) (random, rawXMLMsg, appID [
 	)
 
 	if len(ciphertext) < BlockSize {
-		err = fmt.Errorf("AESDecryptMsg: the length of ciphertext too short: %d", len(ciphertext))
+		err = fmt.Errorf("aesDecryptMsg: the length of ciphertext too short: %d", len(ciphertext))
 		return
 	}
 	if len(ciphertext)&BlockMask != 0 {
-		err = fmt.Errorf("AESDecryptMsg: ciphertext is not a multiple of the block size, the length is %d", len(ciphertext))
+		err = fmt.Errorf("aesDecryptMsg: ciphertext is not a multiple of the block size, the length is %d", len(ciphertext))
 		return
 	}
 
@@ -148,7 +142,7 @@ func AESDecryptMsg(ciphertext []byte, aesKey []byte) (random, rawXMLMsg, appID [
 	// PKCS#7 去除补位
 	amountToPad := int(plaintext[len(plaintext)-1])
 	if amountToPad < 1 || amountToPad > BlockSize {
-		err = fmt.Errorf("AESDecryptMsg: the amount to pad is incorrect: %d", amountToPad)
+		err = fmt.Errorf("aesDecryptMsg: the amount to pad is incorrect: %d", amountToPad)
 		return
 	}
 	plaintext = plaintext[:len(plaintext)-amountToPad]
@@ -156,17 +150,17 @@ func AESDecryptMsg(ciphertext []byte, aesKey []byte) (random, rawXMLMsg, appID [
 	// 反拼接
 	// len(plaintext) == 16+4+len(rawXMLMsg)+len(appId)
 	if len(plaintext) <= 20 {
-		err = fmt.Errorf("AESDecryptMsg: plaintext too short, the length is %d", len(plaintext))
+		err = fmt.Errorf("aesDecryptMsg: plaintext too short, the length is %d", len(plaintext))
 		return
 	}
 	rawXMLMsgLen := int(decodeNetworkByteOrder(plaintext[16:20]))
 	if rawXMLMsgLen < 0 {
-		err = fmt.Errorf("AESDecryptMsg: incorrect msg length: %d", rawXMLMsgLen)
+		err = fmt.Errorf("aesDecryptMsg: incorrect msg length: %d", rawXMLMsgLen)
 		return
 	}
 	appIDOffset := 20 + rawXMLMsgLen
 	if len(plaintext) <= appIDOffset {
-		err = fmt.Errorf("AESDecryptMsg: msg length too large: %d", rawXMLMsgLen)
+		err = fmt.Errorf("aesDecryptMsg: msg length too large: %d", rawXMLMsgLen)
 		return
 	}
 

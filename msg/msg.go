@@ -8,14 +8,13 @@ import (
 
 	"github.com/usthooz/gutil"
 	"github.com/usthooz/owechat/config"
-	"github.com/usthooz/owechat/token"
 	"github.com/usthooz/owechat/util"
 )
 
 // DecodeMsg 解密消息
 func DecodeMsg(m *EncryptedXMLMsg) (*MessageRecive, error) {
 	// 解密消息
-	_, msgByte, err := DecryptMsg(cfg.BaseConf.Appid, m.EncryptedMsg, cfg.BaseConf.AesKey)
+	_, msgByte, err := decryptMsg(cfg.BaseConf.Appid, m.MsgSignature, cfg.BaseConf.AesKey)
 	if err != nil {
 		return nil, err
 	}
@@ -38,21 +37,17 @@ func BuildReplyMsg(replyMsg *ReplyMsg) (*ReplyEncryptedMsg, error) {
 		return nil, err
 	}
 	// 对消息进行加密
-	encryptedMsg, err := EncryptMsg(gutil.RandomBytes(16), msgByte, cfg.BaseConf.Appid, cfg.BaseConf.AesKey)
+	encryptedMsg, err := encryptMsg(gutil.RandomBytes(16), msgByte, cfg.BaseConf.Appid, cfg.BaseConf.AesKey)
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := token.GetAccessToken()
-	if err != nil {
-		return nil, err
-	}
 	timestamp := time.Now().Unix()
 	timestampStr := strconv.FormatInt(timestamp, 10)
 	// 随机值
 	nonce := gutil.RandString(16)
 	// 签名
-	msgSignature := util.Signature(accessToken, timestampStr, nonce, string(encryptedMsg))
+	msgSignature := util.Signature(cfg.BaseConf.Token, timestampStr, nonce, string(encryptedMsg))
 
 	// 回复的消息结构体
 	return &ReplyEncryptedMsg{
