@@ -25,10 +25,11 @@ func Create(b []*Button) error {
 	if err != nil {
 		return err
 	}
+	ozlog.Infof("token-> %s", accessToken)
 	// new request
 	req := ghttp.Request{
 		Url:       fmt.Sprintf("%s%s", MENU_CREATE, accessToken),
-		Query:     menuReq,
+		Body:      menuReq,
 		Method:    "POST",
 		ShowDebug: cfg.BaseConf.Debug,
 	}
@@ -70,7 +71,7 @@ func Delete() error {
 	}
 	// new request
 	req := ghttp.Request{
-		Url:       fmt.Sprintf("%s%s", MENU_CREATE, accessToken),
+		Url:       fmt.Sprintf("%s%s", MENU_DELETE, accessToken),
 		Method:    "GET",
 		ShowDebug: cfg.BaseConf.Debug,
 	}
