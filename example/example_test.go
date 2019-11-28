@@ -8,16 +8,17 @@ import (
 	"github.com/usthooz/owechat/menu"
 	"github.com/usthooz/owechat/msg"
 	"github.com/usthooz/owechat/token"
+	"github.com/usthooz/owechat/util"
 	"github.com/xiaoenai/tp-micro/model/redis"
 )
 
 func init() {
 	config := cfg.Config{
 		Base: &cfg.BaseConfig{
-			Appid:     "wxda4390c918b1fe8e",
-			AppSecret: "e8fba0b3df83a545d4ddae8e7bcbfd59",
-			AesKey:    "rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkI",
-			Token:     "xiaoenai",
+			Appid:     "",
+			AppSecret: "",
+			AesKey:    "",
+			Token:     "",
 			Debug:     true,
 		},
 		Redis: redis.NewConfig(),
@@ -63,14 +64,21 @@ func TestDeleteMenu(t *testing.T) {
 // TestDecryptMsg
 func TestDecryptMsg(t *testing.T) {
 	msg, err := msg.DecodeMsg(&msg.EncryptedXMLMsg{
-		// Signature:    "ccfe3a24491fb76be939a32d0e50bc3ecb7a9ca5",
-		// Timestamp:    1574867028,
-		// Nonce:        "1761970467",
+		Signature:    "9af52b2de12ba0a97196822b6b17dece94bc1d7e",
+		Timestamp:    1574938655,
+		Nonce:        "Yl9HxD4QWS96igWF",
+		MsgSignature: "afec8c5cb589c7d0924c296eb732819e166cc4a6",
 		EncryptType:  "aes",
-		MsgSignature: "5066d943c76d443ed86a4b8e68013fb00a62cb95",
+		EncryptedMsg: "2uLH+3HnAoPmzbbqWbEL8yHD1NLDxmQ0b4xnDd6dNi3LYyDg44D8VJfscbuR+2zrEZwEq7rU1eEzkOizllAMjyu7s4SOqRbB8PCDmKnHe+2e8/6LgBFj4OcF9t6K0xw7N4yiUYi/ZtThIv0md6ad6ecm4R+dLpwtYbWR7RRA/5PbB7NN1kzVzavdlrSryj6YC4VjWsfljjf8OIYyj6+XwpEaOe7cXidRi0hHwLpfrdiOsEWM+QZKCG7ziOlL2zm8D5lMdUrdKUwrt80GNXbOg22LIDMHSzVpztiTHOS38uGcwdNdpS4O1p08K7MIMXIttxA084/CB8Oe657EsC5k1g==",
 	})
 	if err != nil {
-		panic(err)
+		t.Errorf("Err-> %v", err)
 	}
 	t.Logf("Msg-> %#v", msg)
+}
+
+func TestSign(t *testing.T) {
+	// sign := util.Signature("xiaoenai", "1574934213", "1251643255")
+	sign := util.Signature("xiaoenai", "1574934213", "1251643255", "YXPHWrA3a9eRyjubuU0xjdtxWdx9duHkncV/iEk6Qv1KChAbG5PO471St0D+CWy/l0PQCWioR05eg6nCD+JaJuJpTgqnqtfdFuRKBopWVDDaYmRKxNj6w7PQzEpsEYZ6FfT91pYOJCjZCasbpfhnJMXQlqTM8zBVkyxzSDjyg7ul6OZeKIDjI9SiRwai7rTOGLzX2aGSCLeE2z6AhTNomYePTT0uE9VL418cNWdAu9lqVlR1Te8b6Dxxt1BnZGL3cneAfk1fxNlIbraNQndC0UvA7hXQyo3JNbqhwY1eiHKZDsQCY/0QKlbCMRN6Eck1Sb8wEU2WMYN367H/397o2Mz0T7EA10H4kd7BRi+eQVx9i4qKtbGub6YRu7tqUnObHUYETSVjYb2r6Fc48qZcIBSHSuKufPighTLdAQbslCs=")
+	t.Logf("Sign-> %v", sign)
 }
