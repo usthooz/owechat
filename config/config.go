@@ -21,6 +21,8 @@ type BaseConfig struct {
 	Token string `yml:"token"`
 	// PayKey 支付秘钥
 	PayKey string `yaml:"pay_key"`
+	// MchId 商户ID
+	MchId string `yaml:"mch_id"`
 	// redis缓存的头部key(选填)
 	CacheKey string `yaml:"cache_key"`
 	// Debug 是否调试模式
@@ -33,6 +35,16 @@ type Config struct {
 	Base *BaseConfig `yaml:"base"`
 	// Redis 缓存的redis配置
 	Redis *redis.Config `yaml:"redis"`
+}
+
+// NewConfig
+func NewConfig() *Config {
+	return &Config{
+		Base: &BaseConfig{
+			Debug: true,
+		},
+		Redis: redis.NewConfig(),
+	}
 }
 
 // InitOwechat
