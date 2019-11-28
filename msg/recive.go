@@ -79,14 +79,23 @@ type MessageRecive struct {
 
 // EncryptedXMLMsg 安全模式下的消息体
 type EncryptedXMLMsg struct {
-	// // 签名
-	// Signature string `param:"<query>" xml:"signature"`
-	// // 秒级时间戳
-	// Timestamp int64 `param:"<query>" xml:"timestamp"`
-	// // 随机值
-	// Nonce string `param:"<query>" xml:"nonce"`
+	XMLName struct{} `xml:"xml" json:"-"`
+
+	// 签名
+	Signature string `param:"<query>" xml:"signature"`
+	// 秒级时间戳
+	Timestamp int64 `param:"<query>" xml:"timestamp"`
+	// 随机值
+	Nonce string `param:"<query>" xml:"nonce"`
+	// 发送者openID
+	Openid string `param:"<query>" xml:"openid"`
 	// 加密方式
-	EncryptType string `params:"<query>" xml:"encrypt_type"`
+	EncryptType string `param:"<query>" xml:"encrypt_type"`
+	// 加密
+	MsgSignature string `param:"<query>" xml:"msg_signature"`
+
+	// 微信号
+	ToUserName string `xml:"ToUserName"`
 	// 加密消息体
-	MsgSignature string `params:"<query>" xml:"msg_signature"`
+	EncryptedMsg string `xml:"Encrypt"`
 }
