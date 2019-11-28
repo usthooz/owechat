@@ -5,17 +5,14 @@ import (
 	"encoding/hex"
 	"fmt"
 	"sort"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/usthooz/owechat/config"
 )
 
-// nonceStr 用时间戳生成随机字符串
-func nonceStr() string {
-	return strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
-}
+/*
+	https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=4_3
+*/
 
 // calcSign 微信支付计算签名的函数
 func calcSign(mReq map[string]interface{}, key string) string {
