@@ -3,12 +3,15 @@ package pay
 import (
 	"encoding/xml"
 	"fmt"
-	"strings"
+	"io/ioutil"
+	"net/http"
 	"time"
 
+	"github.com/usthooz/oozlog/go"
+
+	"github.com/swxctx/ghttp"
 	"github.com/usthooz/gutil"
 	"github.com/usthooz/owechat/config"
-	"github.com/usthooz/owechat/util"
 )
 
 // SendPack 发放成功: return nil,nil 发放失败: return 查询结果,err/nil
@@ -63,23 +66,44 @@ func SendPack(sp *SendredPackParams) (*SendredPackResp, error) {
 
 	var (
 		bytesReq []byte
-		res      []byte
 	)
 
 	bytesReq, err = xml.Marshal(params)
 	if err != nil {
 		return nil, fmt.Errorf("SendPack: %s", err.Error())
 	}
+	ozlog.Debugf("req-> %v", string(bytesReq))
 
-	// 发起请求
-	res, err = util.DoPostXml(SendPackUrl, strings.Replace(string(bytesReq), "SendredPackReq", "xml", -1))
-	if err != nil {
-		return nil, fmt.Errorf("SendPack: %s", err.Error())
+	// new request
+	req := ghttp.Request{
+		Url:         SendPackUrl,
+		Method:      "POST",
+		Body:        bytesReq,
+		ContentType: "application/xml; charset=utf-8",
+		ShowDebug:   cfg.BaseConf.Debug,
+		Insecure:    true,
+		TlsConfig:   ghttp.GetTlsConfig(cfg.BaseConf.PayCertFile, cfg.BaseConf.PayKeyFile),
 	}
+
+	// send request
+	resp, err := req.Do()
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("SendPack err, status -> %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+
+	respBs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	ozlog.Debugf("resp: %s", string(respBs))
 
 	// 解析响应
 	xmlResp := SendredPackResp{}
-	err = xml.Unmarshal(res, &xmlResp)
+	err = xml.Unmarshal(respBs, &xmlResp)
 	if err != nil {
 		return nil, fmt.Errorf("SendPack: %s", err.Error())
 	}
@@ -106,26 +130,46 @@ func QueryPack(mchBillno, billType string) (*QueryPackResp, error) {
 		"bill_type":  params.BillType,
 	}, cfg.BaseConf.PayKey)
 
-	var (
-		bytesReq []byte
-		res      []byte
-	)
+	// params
 	bytesReq, err := xml.Marshal(params)
 	if err != nil {
 		return nil, fmt.Errorf("QueryPack: %s", err.Error())
 	}
+	ozlog.Debugf("req-> %v", string(bytesReq))
 
-	// 发起请求
-	res, err = util.DoPostXml(QueryPackUrl, strings.Replace(string(bytesReq), "QueryPackReq", "xml", -1))
-	if err != nil {
-		return nil, fmt.Errorf("QueryPack: %s", err.Error())
+	// new request
+	req := ghttp.Request{
+		Url:         QueryPackUrl,
+		Method:      "POST",
+		Body:        bytesReq,
+		ContentType: "application/xml; charset=utf-8",
+		ShowDebug:   cfg.BaseConf.Debug,
+		Insecure:    true,
+		TlsConfig:   ghttp.GetTlsConfig(cfg.BaseConf.PayCertFile, cfg.BaseConf.PayKeyFile),
 	}
+
+	// send request
+	resp, err := req.Do()
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("QueryPack err, status -> %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+
+	respBs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	ozlog.Debugf("resp: %s", string(respBs))
 
 	// 解析响应
 	xmlResp := QueryPackResp{}
-	err = xml.Unmarshal(res, &xmlResp)
+	err = xml.Unmarshal(respBs, &xmlResp)
 	if err != nil {
 		return nil, fmt.Errorf("QueryPack: %s", err.Error())
 	}
+
 	return &xmlResp, nil
 }

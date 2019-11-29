@@ -1,11 +1,14 @@
 package pay
 
+import "encoding/xml"
+
 /*
 	https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3
 */
 
 // SendredPackReq 发放现金红包请求参数
 type SendredPackReq struct {
+	XMLName xml.Name `xml:"xml"`
 	// 随机字符串，不长于32位
 	NonceStr string `xml:"nonce_str,omitempty"`
 	// 请求签名
