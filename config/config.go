@@ -23,6 +23,10 @@ type BaseConfig struct {
 	PayKey string `yaml:"pay_key"`
 	// MchId 商户ID
 	MchId string `yaml:"mch_id"`
+	// PayCertFile 红包发放证书
+	PayCertFile string `yaml:"pay_cert_file"`
+	// PayKeyFile 红包发放证书
+	PayKeyFile string `yaml:"pay_key_file"`
 	// redis缓存的头部key(选填)
 	CacheKey string `yaml:"cache_key"`
 	// Debug 是否调试模式
