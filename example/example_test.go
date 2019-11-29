@@ -1,12 +1,15 @@
 package example
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/usthooz/oozlog/go"
 	"github.com/usthooz/owechat/config"
 	"github.com/usthooz/owechat/menu"
 	"github.com/usthooz/owechat/msg"
+	"github.com/usthooz/owechat/pay"
 	"github.com/usthooz/owechat/token"
 	"github.com/usthooz/owechat/util"
 	"github.com/xiaoenai/tp-micro/model/redis"
@@ -15,11 +18,12 @@ import (
 func init() {
 	config := cfg.Config{
 		Base: &cfg.BaseConfig{
-			Appid:     "",
-			AppSecret: "",
-			AesKey:    "",
-			Token:     "",
-			Debug:     true,
+			// 测试号
+			// Appid:     "wxda4390c918b1fe8e",
+			// AppSecret: "e8fba0b3df83a545d4ddae8e7bcbfd59",
+			// AesKey:    "rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkI",
+			// Token:     "xiaoenai",
+			Debug: true,
 		},
 		Redis: redis.NewConfig(),
 	}
@@ -44,8 +48,8 @@ func TestCreateMenu(t *testing.T) {
 	)
 	buttons = append(buttons, &menu.Button{
 		Type: menu.MenuByClick,
-		Name: "点我点我",
-		Key:  "V1001_TODAY_MUSIC",
+		Name: "领取红包",
+		Key:  "XEA_GARDEN_GET_PACK",
 	})
 	err := menu.Create(buttons)
 	if err != nil {
@@ -77,8 +81,29 @@ func TestDecryptMsg(t *testing.T) {
 	t.Logf("Msg-> %#v", msg)
 }
 
+// TestSign
 func TestSign(t *testing.T) {
 	// sign := util.Signature("xiaoenai", "1574934213", "1251643255")
 	sign := util.Signature("xiaoenai", "1574934213", "1251643255", "YXPHWrA3a9eRyjubuU0xjdtxWdx9duHkncV/iEk6Qv1KChAbG5PO471St0D+CWy/l0PQCWioR05eg6nCD+JaJuJpTgqnqtfdFuRKBopWVDDaYmRKxNj6w7PQzEpsEYZ6FfT91pYOJCjZCasbpfhnJMXQlqTM8zBVkyxzSDjyg7ul6OZeKIDjI9SiRwai7rTOGLzX2aGSCLeE2z6AhTNomYePTT0uE9VL418cNWdAu9lqVlR1Te8b6Dxxt1BnZGL3cneAfk1fxNlIbraNQndC0UvA7hXQyo3JNbqhwY1eiHKZDsQCY/0QKlbCMRN6Eck1Sb8wEU2WMYN367H/397o2Mz0T7EA10H4kd7BRi+eQVx9i4qKtbGub6YRu7tqUnObHUYETSVjYb2r6Fc48qZcIBSHSuKufPighTLdAQbslCs=")
 	t.Logf("Sign-> %v", sign)
+}
+
+// TestSendPack
+func TestSendPack(t *testing.T) {
+	mchBillno := fmt.Sprintf("%d", time.Now().Unix())
+	resp, err := pay.SendPack(&pay.SendredPackParams{
+		MchBillno:   mchBillno,
+		SendName:    "ooz",
+		ReOpenid:    "oxQ-Tt47z8svNzqFXjKCABvhTCxU",
+		TotalAmount: 10,
+		TotalNum:    1,
+		Wishing:     "恭喜发财",
+		ActName:     "一起拼",
+		Remark:      mchBillno,
+		SceneId:     pay.SCENEBYPRODUCT_1,
+	})
+	if err != nil {
+		t.Errorf("Err-> %v", err)
+	}
+	t.Logf("resp-> %#v", resp)
 }
