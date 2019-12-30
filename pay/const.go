@@ -45,3 +45,10 @@ const (
 	// 已退款
 	PACKSTATUSBYREFUND = "REFUND"
 )
+
+const (
+	// 成功标识
+	SUCCESSFLAG = "SUCCESS"
+	// 失败标识
+	FAILEDFLAG = "FAIL"
+)
