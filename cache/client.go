@@ -25,5 +25,10 @@ func InitCache(cfg *redis.Config, cacheKey ...string) error {
 	if len(cacheKey) > 0 && len(cacheKey[0]) > 0 {
 		accessTokenKey = cacheKey[0]
 	}
+	// ticket cache key
+	ticketCacheKey = wxRedis.module.Key(defaultTicketCacheKey)
+	if len(cacheKey) > 2 && len(cacheKey[1]) > 0 {
+		ticketCacheKey = cacheKey[1]
+	}
 	return nil
 }
