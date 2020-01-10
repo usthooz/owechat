@@ -7,6 +7,7 @@ import (
 
 	"github.com/usthooz/oozlog/go"
 	"github.com/usthooz/owechat/config"
+	"github.com/usthooz/owechat/jssign"
 	"github.com/usthooz/owechat/menu"
 	"github.com/usthooz/owechat/msg"
 	"github.com/usthooz/owechat/pay"
@@ -19,8 +20,8 @@ func init() {
 	config := cfg.Config{
 		Base: &cfg.BaseConfig{
 			// 测试号
-			// Appid:     "wxda4390c918b1fe8e",
-			// AppSecret: "e8fba0b3df83a545d4ddae8e7bcbfd59",
+			Appid:     "wxda4390c918b1fe8e",
+			AppSecret: "e8fba0b3df83a545d4ddae8e7bcbfd59",
 			// AesKey:    "rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkI",
 			// Token:     "xiaoenai",
 			Debug: true,
@@ -106,4 +107,13 @@ func TestSendPack(t *testing.T) {
 		t.Errorf("Err-> %v", err)
 	}
 	t.Logf("resp-> %#v", resp)
+}
+
+// TestJsSign
+func TestJsSign(t *testing.T) {
+	url, err := jssign.GetJsSign("https://www.ooz.ink")
+	if err != nil {
+		t.Errorf("Err-> %v", err)
+	}
+	t.Logf("Sign Url-> %s", url)
 }
