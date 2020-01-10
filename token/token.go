@@ -32,7 +32,7 @@ func GetAccessToken() (accessToken string, err error) {
 	// request
 	_, bs, e := util.GET(url)
 	if e != nil {
-		err = fmt.Errorf("请求失败, err=%v", e)
+		err = fmt.Errorf("GetAccessToken: http get err-> %v", e)
 		return
 	}
 
@@ -41,19 +41,23 @@ func GetAccessToken() (accessToken string, err error) {
 	)
 	j, e = simplejson.NewJson(bs)
 	if e != nil {
-		err = fmt.Errorf("解析失败, err=%v", err)
+		err = fmt.Errorf("GetAccessToken: json parse err-> %v", err)
 		return
 	}
 
 	// 判断获取是否存在错误
 	if _, ok := j.CheckGet("errcode"); ok {
 		//获取失败
-		err = fmt.Errorf("获取access_token失败, err=%s", string(bs))
+		err = fmt.Errorf("GetAccessToken: get token err-> %s", string(bs))
 		return
 	}
 
 	// 获取ak并缓存
 	accessToken = j.GetPath("access_token").MustString()
+	if len(accessToken) == 0 {
+		err = fmt.Errorf("GetAccessToken: access_token is nil.")
+		return
+	}
 
 	// 缓存有效期
 	expire := j.GetPath("expires_in").MustInt()
