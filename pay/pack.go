@@ -7,11 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/usthooz/oozlog/go"
-
 	"github.com/swxctx/ghttp"
 	"github.com/usthooz/gutil"
-	"github.com/usthooz/owechat/config"
+	cfg "github.com/usthooz/owechat/config"
 )
 
 // SendPack 发放成功: return nil,nil 发放失败: return 查询结果,err/nil
@@ -72,7 +70,6 @@ func SendPack(sp *SendredPackParams) (*SendredPackResp, error) {
 	if err != nil {
 		return nil, fmt.Errorf("SendPack: %s", err.Error())
 	}
-	ozlog.Debugf("req-> %v", string(bytesReq))
 
 	// new request
 	req := ghttp.Request{
@@ -99,7 +96,6 @@ func SendPack(sp *SendredPackParams) (*SendredPackResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	ozlog.Debugf("resp: %s", string(respBs))
 
 	// 解析响应
 	xmlResp := SendredPackResp{}
@@ -135,7 +131,6 @@ func QueryPack(mchBillno, billType string) (*QueryPackResp, error) {
 	if err != nil {
 		return nil, fmt.Errorf("QueryPack: %s", err.Error())
 	}
-	ozlog.Debugf("req-> %v", string(bytesReq))
 
 	// new request
 	req := ghttp.Request{
@@ -162,7 +157,6 @@ func QueryPack(mchBillno, billType string) (*QueryPackResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	ozlog.Debugf("resp: %s", string(respBs))
 
 	// 解析响应
 	xmlResp := QueryPackResp{}

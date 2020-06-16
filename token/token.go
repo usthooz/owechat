@@ -6,7 +6,7 @@ import (
 
 	simplejson "github.com/bitly/go-simplejson"
 	"github.com/usthooz/owechat/cache"
-	"github.com/usthooz/owechat/config"
+	cfg "github.com/usthooz/owechat/config"
 	"github.com/usthooz/owechat/util"
 )
 

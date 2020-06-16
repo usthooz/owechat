@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/usthooz/gutil"
-	"github.com/usthooz/owechat/config"
+	cfg "github.com/usthooz/owechat/config"
 	"github.com/usthooz/owechat/ticket"
 )
 

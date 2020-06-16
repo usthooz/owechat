@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/usthooz/owechat/config"
+	cfg "github.com/usthooz/owechat/config"
 )
 
 /*

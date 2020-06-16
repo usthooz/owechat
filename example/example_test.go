@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/usthooz/oozlog/go"
-	"github.com/usthooz/owechat/config"
+	"github.com/swxctx/xlog"
+	cfg "github.com/usthooz/owechat/config"
 	"github.com/usthooz/owechat/jssign"
 	"github.com/usthooz/owechat/menu"
 	"github.com/usthooz/owechat/msg"
@@ -29,7 +29,7 @@ func init() {
 		Redis: redis.NewConfig(),
 	}
 	if err := config.Reload(); err != nil {
-		ozlog.Errorf("init err-> %v", err)
+		xlog.Errorf("init err-> %v", err)
 	}
 }
 
@@ -37,9 +37,9 @@ func init() {
 func TestGetToken(t *testing.T) {
 	token, err := token.GetAccessToken()
 	if err != nil {
-		ozlog.Errorf("GetTokenTest err-> %v", err)
+		xlog.Errorf("GetTokenTest err-> %v", err)
 	}
-	ozlog.Infof("Token-> %s", token)
+	xlog.Infof("Token-> %s", token)
 }
 
 // TestCreateMenu 创建菜单

@@ -7,8 +7,7 @@ import (
 	"net/http"
 
 	"github.com/swxctx/ghttp"
-	"github.com/usthooz/oozlog/go"
-	"github.com/usthooz/owechat/config"
+	cfg "github.com/usthooz/owechat/config"
 	"github.com/usthooz/owechat/token"
 )
 
@@ -19,13 +18,11 @@ func Create(b []*Button) error {
 		Appid:  cfg.BaseConf.Appid,
 	}
 
-	ozlog.Debugf("params: %#v", menuReq)
-
 	accessToken, err := token.GetAccessToken()
 	if err != nil {
 		return err
 	}
-	ozlog.Infof("token-> %s", accessToken)
+
 	// new request
 	req := ghttp.Request{
 		Url:       fmt.Sprintf("%s%s", MENU_CREATE, accessToken),
@@ -48,7 +45,6 @@ func Create(b []*Button) error {
 	if err != nil {
 		return err
 	}
-	ozlog.Debugf("resp: %s", string(respBs))
 
 	var (
 		menuResp *ErrorResp
@@ -90,7 +86,6 @@ func Delete() error {
 	if err != nil {
 		return err
 	}
-	ozlog.Debugf("resp: %s", string(respBs))
 
 	var (
 		menuResp *ErrorResp

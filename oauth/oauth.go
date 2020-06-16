@@ -7,8 +7,7 @@ import (
 	"net/http"
 
 	"github.com/swxctx/ghttp"
-	"github.com/usthooz/oozlog/go"
-	"github.com/usthooz/owechat/config"
+	cfg "github.com/usthooz/owechat/config"
 )
 
 // GetAccessToken 获取用户access_token
@@ -42,7 +41,6 @@ func GetAccessToken(code string) (*GetAccessTokenResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	ozlog.Debugf("resp: %s", string(respBs))
 
 	var (
 		accessTokenResp *GetAccessTokenResp
