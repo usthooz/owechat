@@ -80,6 +80,7 @@ func SendPack(sp *SendredPackParams) (*SendredPackResp, error) {
 		ShowDebug:   cfg.BaseConf.Debug,
 		Insecure:    true,
 		TlsConfig:   ghttp.GetTlsConfig(cfg.BaseConf.PayCertFile, cfg.BaseConf.PayKeyFile),
+		Timeout:     time.Duration(cfg.BaseConf.TimeoutSecond) * time.Second,
 	}
 
 	// send request

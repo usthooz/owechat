@@ -31,6 +31,8 @@ type BaseConfig struct {
 	CacheKey string `yaml:"cache_key"`
 	// Debug 是否调试模式
 	Debug bool `yaml:"debug"`
+	// TimeoutSecond 超时时间
+	TimeoutSecond int64 `yaml:"timeout_second"`
 }
 
 // Config owechat配置中心
@@ -55,6 +57,10 @@ func NewConfig() *Config {
 func (cfg *Config) Reload() error {
 	// init base conf
 	BaseConf = cfg.Base
+	if BaseConf.TimeoutSecond <= 0 {
+		// 默认2s超时
+		BaseConf.TimeoutSecond = 2
+	}
 	// init cache redis
 	if err := cache.InitCache(cfg.Redis, BaseConf.CacheKey); err != nil {
 		return err
